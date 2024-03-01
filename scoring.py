@@ -13,45 +13,69 @@ def calc_sim(cell_1, cell_2):
 dataset['sim_score'] = dataset.apply(lambda row: calc_sim(row['desired_answer'], row['student_answer']), axis = 1)
 dataset.to_csv('processed.csv', index = False)
 
-X = dataset['sim_score'].values.reshape(-1, 1)
-y = dataset['score_avg'].values.reshape(-1, 1)
+print("Sim Score Done!")
+
+from sklearn.preprocessing import StandardScaler
+
+input_var = 'sim_score'
+output_var = 'score_avg'
+
+X = dataset[[input_var]].values
+y = dataset[output_var].values
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-X_train_tensor = torch.from_numpy(X_train)
-y_train_tensor = torch.from_numpy(y_train)
+print("Dataset Split")
+
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+X_train_tensor = torch.FloatTensor(X_train)
+y_train_tensor = torch.FloatTensor(y_train).view(-1, 1)
 
 class LinearRegressionModel(nn.Module):
-    def __init__(self):
+    def __init__(self, input_size, output_size):
         super(LinearRegressionModel, self).__init__()
-        self.linear = nn.Linear(1, 1)
+        self.linear = nn.Linear(input_size, output_size)
 
     def forward(self, x):
         return self.linear(x)
 
-model = LinearRegressionModel()
+input_size = X_train.shape[1]
+output_size = 1
+model = LinearRegressionModel(input_size, output_size)
+
+print("Model Instantiated")
 
 criterion = nn.MSELoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
 
-epochs = 2500
-for epoch in range(epochs):
-    y_pred = model(X_train_tensor)
+print("Training Start")
 
-    loss = criterion(y_pred, y_train_tensor)
+num_epochs = 1000
+for epoch in range(num_epochs):
+    # Forward pass
+    outputs = model(X_train_tensor)
+    loss = criterion(outputs, y_train_tensor)
 
+    # Backward pass and optimization
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
-
-    if (epoch + 1) % 100 == 0:
+    if (epoch + 1) % 10 == 0:
         print(f'Epoch [{epoch+1}/{epochs}], Loss: {loss.item():.4f}')
 
-X_test_tensor = torch.tensor(X_test, dtype=torch.float32)
-y_pred_test = model(X_test_tensor)
+X_test_tensor = torch.FloatTensor(X_test)
+predictions_tensor = model(X_test_tensor)
 
-mse = criterion(y_pred_test, torch.tensor(y_test, dtype=torch.float32))
-print(f'\nMean Squared Error on Test Set: {mse.item():.4f}')
+predictions = predictions_tensor.detach().numpy()
+
+# Evaluate the model
+mse = criterion(y_test, predictions)
+print(f'Mean Squared Error on Test Set: {mse}')
+
+
 
 torch.save(model.state_dict(), 'lin_reg.pth')
 
