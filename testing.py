@@ -1,9 +1,10 @@
 import torch
 import pandas as pd
 import numpy as np
+import torch.nn as nn
 from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
 from sentence_transformers import SentenceTransformer, util
-
 base = SentenceTransformer("multi-qa-MiniLM-L6-cos-v1")
 
 class LinearRegressionModel(nn.Module):
