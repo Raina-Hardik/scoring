@@ -14,7 +14,7 @@ dataset['sim_score'] = dataset.apply(lambda row: calc_sim(row['desired_answer'],
 dataset.to_csv('processed.csv', index = False)
 
 X = df['sim_score'].values.reshape(-1, 1)
-y = df['score'].values.reshape(-1, 1)
+y = df['score_avg'].values.reshape(-1, 1)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
