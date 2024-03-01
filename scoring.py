@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 import pandas as pd
-from model_class import LinReg
 from sklearn.model_selection import train_test_split
 
 from sentence_transformers import SentenceTransformer, util
@@ -19,7 +18,14 @@ X = dataset['sim_score'].values.reshape(-1, 1)
 Y = dataset['score_avg'].values.reshape(-1, 1)
 
 x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
-    
+
+class LinReg(nn.Module):
+    def __init__(self):
+        super(LinReg, self).__init__()
+        self.linear = nn.Linear(1,1)
+    def forward(self, x):
+        return self.linear
+
 model = LinReg()
 crit = nn.MSELoss()
 optim = torch.optim.SGD(model.parameters(), lr=0.01)
