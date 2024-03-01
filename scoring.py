@@ -13,8 +13,8 @@ def calc_sim(cell_1, cell_2):
 dataset['sim_score'] = dataset.apply(lambda row: calc_sim(row['desired_answer'], row['student_answer']), axis = 1)
 dataset.to_csv('processed.csv', index = False)
 
-X = data['sim_score'].values.reshape(-1, 1)
-y = data['score_avg'].values.reshape(-1, 1)
+X = dataset['sim_score'].values.reshape(-1, 1)
+y = dataset['score_avg'].values.reshape(-1, 1)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
