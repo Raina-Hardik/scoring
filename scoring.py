@@ -11,6 +11,7 @@ def calc_sim(cell_1, cell_2):
     return util.dot_score(base.encode(cell_1), base.encode(cell_2))
 
 dataset['sim_score'] = dataset.apply(lambda row: calc_sim(row['desired_answer'], row['student_answer']), axis = 1)
+dataset['sim_score'] = dataset['sim_score'].apply(lambda x: x.item())
 dataset.to_csv('processed.csv', index = False)
 
 print("Sim Score Done!")
