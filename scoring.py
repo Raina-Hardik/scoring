@@ -53,7 +53,7 @@ optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
 
 print("Training Start")
 
-num_epochs = 1000
+num_epochs = 350
 for epoch in range(num_epochs):
     # Forward pass
     outputs = model(X_train_tensor)
