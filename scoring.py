@@ -18,8 +18,8 @@ y = dataset['score_avg'].values.reshape(-1, 1)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-X_train_tensor = torch.tensor(X_train, dtype=torch.float32)
-y_train_tensor = torch.tensor(y_train, dtype=torch.float32)
+X_train_tensor = torch.from_numpy(X_train, dtype=torch.float32)
+y_train_tensor = torch.from_numpy(y_train, dtype=torch.float32)
 
 class LinearRegressionModel(nn.Module):
     def __init__(self):
