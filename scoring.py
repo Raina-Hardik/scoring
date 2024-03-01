@@ -5,11 +5,11 @@ from sklearn.model_selection import train_test_split
 
 from sentence_transformers import SentenceTransformer, util
 
-model = SentenceTransformer("multi-qa-MiniLM-L6-cos-v1")
+base = SentenceTransformer("multi-qa-MiniLM-L6-cos-v1")
 dataset = pd.read_csv("./80_percent_split.csv")
 
 def calc_sim(cell_1, cell_2):
-    return util.dot_score(cell_1, cell_2)
+    return util.dot_score(base.encode(cell_1), base.encode(cell_2))
 
 dataset['sim_score'] = dataset.apply(lambda row: calc_sim(row['desired_answer'], row['student_answer']), axis = 1)
 dataset.to_csv('processed.csv', index = False)
@@ -30,7 +30,7 @@ model = LinReg()
 crit = nn.MSELoss()
 optim = torch.optim.SGD(model.parameters(), lr=0.01)
 
-epochs = 1000
+epochs = 2500
 
 for epoch in range(epochs):
     y_pred = model(x_train)
@@ -41,4 +41,9 @@ for epoch in range(epochs):
     loss.backward()
     optim.step()
 
+    if (epoch + 1) % 100 == 0:
+        print(f'Epoch {epoch+1}/{epochs}; Loss: {loss.item():.4f}')
+
 torch.save(model.state_dict(), 'lin_reg.pth')
+
+# test = model(torch.tensor(X_test, dtype=torch.float32))
