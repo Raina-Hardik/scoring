@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
 from sentence_transformers import SentenceTransformer, util
 
 base = SentenceTransformer("multi-qa-MiniLM-L6-cos-v1")
