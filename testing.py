@@ -2,6 +2,7 @@ import torch
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
+from sentence_transformers import SentenceTransformer, util
 
 base = SentenceTransformer("multi-qa-MiniLM-L6-cos-v1")
 
