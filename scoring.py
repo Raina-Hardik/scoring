@@ -71,12 +71,6 @@ predictions_tensor = model(X_test_tensor)
 
 predictions = predictions_tensor.detach().numpy()
 
-# Evaluate the model
-mse = criterion(y_test, predictions)
-print(f'Mean Squared Error on Test Set: {mse}')
-
-
-
 torch.save(model.state_dict(), 'lin_reg.pth')
 
 # test = model(torch.tensor(X_test, dtype=torch.float32))
